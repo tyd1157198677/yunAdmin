@@ -2,16 +2,17 @@
   <div class="AddRole">
     <!-- 温馨提示 -->
     <div class="tips">
-      <WarmPrompt />
-    </div>
+        <img class="tips_img" src="@/assets/img/icon_general_hint_16@2x (1).png" alt />
+        <span class="tips_font">温馨提示：编辑角色，拥有该角色包含权限的账号会同步更改，请谨慎编辑！</span>
+      </div>
     <div class="form">
       <p class="title">基本信息</p>
       <a-form-model ref="ruleForm" :model="ruleForm" :rules="rules" v-bind="layout">
         <!-- prop属性值为表单验证规则rules里的绑定 -->
         <!-- 账号 -->
-        <a-form-model-item has-feedback label="角色名称" prop="checkRole" :colon="false" ref="name">
+        <a-form-model-item has-feedback label="角色名称" prop="roleName" :colon="false" ref="name">
           <a-input
-            v-model="ruleForm.checkRole"
+            v-model="ruleForm.roleName"
             placeholder="请输入角色名称"
             type="text"
             @change="getvalue"
@@ -21,18 +22,24 @@
           />
         </a-form-model-item>
         <!-- 简介 -->
-        <a-form-model-item has-feedback label="角色描述" :colon="false">
-          <a-textarea placeholder="请输入角色描述..." style="resize: none" :rows="6" />
+        <a-form-model-item has-feedback label="角色描述" :colon="false" class="roleMiapshu">
+          <a-textarea placeholder="请输入角色描述..." maxlength="50" v-model="ruleForm.roleMiaoshu" style="resize: none" :rows="6" />
+          <input type="text" v-model="ruleForm.roleMiaoshu.length+'/50'" class="watchWordLength">
         </a-form-model-item>
+        
 
         <!-- 权限设置 -->
-        <p class="title">权限设置</p>
+        <!-- defaultExpandedKeys：默认展开指定的树节点 -->
+        <!-- defaultSelectedKeys：默认选中的树节点 -->
+        <!-- defaultCheckedKeys：默认选中复选框的树节点 -->
+        <p class="title role_set">权限设置</p>
         <a-tree
           checkable
           :treeData="treeData"
-          :defaultExpandedKeys="['0-0-0', '0-0-1']"
-          :defaultSelectedKeys="['0-0-0', '0-0-1']"
-          :defaultCheckedKeys="['0-0-0', '0-0-1']"
+          :defaultExpandedKeys="['0-0','0-0-0']"
+          :defaultCheckedKeys="ruleForm.ruleSet"
+          @select="this.onSelect"
+          @check="this.onCheck"
         >
           <span slot="title0000" style="color: #1890ff">添加角色</span>
           <span slot="title0001" style="color: #1890ff">编辑角色</span>
@@ -41,25 +48,15 @@
         <!-- 提交栏 -->
       </a-form-model>
     </div>
-    <Submit></Submit>
-    <!-- <div class="submit">
-      <div class="submit_btn">
-        <a-button class="btn" type="primary" size="large" @click="submitForm('ruleForm')">提交</a-button>
-        <a-button class="btn" style="margin-left:20%" size="large" @click="resetForm('ruleForm')">取消</a-button>
-      </div>
-    </div>-->
+    <div class="sub">
+      <a-button class="qu_xiao" @click="quxiao">取消</a-button>
+      <a-button type="primary" @click="sive">保存</a-button>
+    </div>
   </div>
 </template>
-
 <script>
-import WarmPrompt from "@/components/WarmPrompt.vue";
-import Submit from "@/components/Submit";
 import { validator } from "@/antUI/module.js";
 export default {
-  components: {
-    WarmPrompt,
-    Submit
-  },
   data() {
     //树形图数据
     const treeData = [
@@ -95,14 +92,17 @@ export default {
     return {
       treeData, //树形图
       ruleForm: {
-        checkRole: ""
+        roleName: "",//角色名字
+        roleMiaoshu:"",//角色描述
+        ruleSet:['0-0-0-1']//权限设置
+
       },
       //表单验证规则
       rules: {
-        checkRole: [
+        roleName: [
           { validator: validateRole, required: true, trigger: "blur" },
           { min: 2, max: 8, message: "长度在 3 到 8 个字符", trigger: "blur" }
-        ]
+          ]
       },
 
       //表单布局
@@ -112,10 +112,35 @@ export default {
       }
     };
   },
+ 
   methods: {
     getvalue() {
       // console.log(this.ruleForm.role)
-    }
+    },
+    //保存
+    sive() {
+      this.$refs.ruleForm.validate(valid => {
+        if (valid) {
+          console.log(this.ruleForm);
+        } else {
+         return console.log('error submit!!');
+        }
+      });
+      
+    },
+    //取消
+    quxiao() {
+
+    },
+
+    onSelect(selectedKeys, info) {
+      console.log('selected', selectedKeys, info);
+    },
+    //当前选中的key值和选中节点的信息
+    onCheck(checkedKeys, info) {
+      console.log('onCheck', checkedKeys, info);
+      this.ruleForm.ruleSet=checkedKeys
+    },
   }
 };
 </script>
@@ -131,51 +156,65 @@ export default {
 .AddRole {
   width: 100%;
   height: 100%;
-   padding: 1.2% 1.2% 0% 1.2%;
+   padding: 1.2% 1.2% 5px 1.2%;
   background-color: #fff;
   .tips {
-    width: 100%;
-    height: 4.6%;
-    background-color: #fffbe6;
-    border: 1px solid #ffe58f;
-    margin-bottom: 2.5%;
-    display: flex;
-    // justify-content:center;
-    align-items: center;
-    .tips_img {
-      height: 55%;
-      padding: 0 1%;
+      width: 100%;
+      height: 40px;
+      background: rgba(255, 251, 230, 1);
+      border: 1px solid rgba(255, 229, 143, 1);
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      .tips_img {
+        margin:0 10px;
+        width: 16px;
+        height: 16px;
+      }
+      .tips_font {
+        font-size: 14px;
+      }
     }
-    .tips_font {
-      font-size: 1.1rem;
-    }
-  }
-  .title {
-    font-size: 1.2rem;
-    width: 20%;
-    text-align: center;
-    border-left: 5px solid #2b75edff;
-  }
+  
   .form {
-    width: 36%;
-    height: 82%;
-  }
-  // .submit {
-  //   width: 100%;
-  //   height: 9%;
-  //   border-top: 1px solid #efefefff;
-  //   display: flex;
+    width: 40%;
+    height: 75vh;
+    .title {
+    font-size: 14px;
+    width: 100%;
+    height: 20px;
+    padding-left: 10px;
+    border-left: 3px solid #2b75edff;
 
-  //   .submit_btn {
-  //     width: 15%;
-  //     height: 100%;
-  //     padding-top: 1.2%;
-  //     margin: 0% auto;
-  //     display: flex;
-  //     .btn {
-  //       flex-grow: 1;
-  //     }
-  //   }
-  // }
+  }
+  .role_set{
+    margin-top: 50px;
+  }
+  .roleMiapshu{
+    margin-top: 20px;
+    .watchWordLength{
+    width:98%;
+    display: block;
+    text-align: right;
+    padding-right: 10px;
+    border: 0px solid #000;
+    margin-top: -30px;
+    margin-left: 5px;
+    outline: none;
+  }
+  }
+  
+  }
+  .sub {
+    margin: 20px 0;
+    border-top: 1px solid #efefef;
+    margin-left: -30px;
+    padding-top: 30px;
+    width: 120%;
+    text-align: center;
+    .qu_xiao {
+      margin-right: 50px;
+    }
+  }
 }
 </style>

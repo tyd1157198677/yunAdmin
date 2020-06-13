@@ -5,10 +5,7 @@
 <script>
     export default {
       props:{
-        pageCount:{
-          type:Number
-          
-          },       //页面总数
+        pageCount:Number,       //页面总数
         currentPage:Number     //默认打开页数
       },
       methods: {
@@ -20,12 +17,22 @@
       },     
     }
 </script>
-
+<style>
+  .ant-pagination>li{
+    border: none;
+  }
+   .ant-pagination-next .ant-pagination-item-link{
+     font-size: 14px;
+    border: 0px;
+  }
+  .ant-pagination-prev .ant-pagination-item-link{
+    font-size: 14px;
+    border:0px
+  }
+</style>
 <style lang="scss" scoped>
-    .pagination {
-      padding-top: 4%;
-      box-sizing: border-box;
-      position: absolute;
-      right: 0%;
-    }
+.pagination {
+    text-align: right;
+    margin-top: 24px;
+  }
 </style>

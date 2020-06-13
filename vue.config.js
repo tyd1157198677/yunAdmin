@@ -71,7 +71,7 @@ module.exports = {
         .devServer
         .proxy({
           '/api': { //用这个路径代理目标服务器地址
-            target: 'http://localhost:3000', //目标服务器地址
+            target: 'http://localhost:8080', //目标服务器地址
             ws: true,
             secure: false,
             changeOrigin: true,

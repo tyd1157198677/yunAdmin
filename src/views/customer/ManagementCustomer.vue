@@ -1,9 +1,5 @@
 <template>
   <div class="Customer">
-    <div class="header_nav">
-      <span :class='["user_list",current=="0" ? "selectStyle" : ""]' @click="jumpRouter({name:'userList'},'0')">用户列表</span>
-      <span :class='["black_list",current=="1" ? "selectStyle" : ""]' @click="jumpRouter({name:'blackList'},'1')">黑名单列表</span>
-    </div>
     <div class="footer">
         <router-view/>
     </div>
@@ -19,10 +15,7 @@ export default {
       }
     },
     methods: {
-        jumpRouter(routeObj,current) {
-          this.current = current
-            this.$router.push(routeObj)
-        }
+        
     },
 };
 </script>

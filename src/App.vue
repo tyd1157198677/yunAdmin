@@ -14,5 +14,12 @@ export default {
 #app {
   width:100%;
   height: 100%;
+  
 }
+.main{
+    background: #000;
+  }
+  .ant-btn-primary{
+    color: #fff;
+  }
 </style>
